@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        {% block title %}My Django App{% endblock %}
+        {% block title %}Eatmate{% endblock %}
     </title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +21,7 @@
     <header class="bg-white border-b border-gray-200">
         <nav class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <a href="#" class="text-xl font-semibold">
-                MyApp
+                CalMate
             </a>
 
             <div class="space-x-4">
@@ -33,16 +33,15 @@
     </header>
 
     <!-- Main content -->
-    <main class="max-w-7xl mx-auto px-4 py-8">
+    {% comment %} Make sure to add a custom main tag for every page {% endcomment %}
         {% block content %}
         {% endblock %}
-    </main>
 
     <!-- Footer -->
     <footer class="border-t border-gray-200 py-6 text-center text-sm text-gray-500">
-        © {% now "Y" %} MyApp. All rights reserved.
+        © {% now "Y" %} CalMate. All rights reserved.
     </footer>
-
+    <script src="{% static 'myapp/js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
