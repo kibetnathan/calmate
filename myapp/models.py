@@ -7,12 +7,9 @@ from django.db import models
 
 # Create your models here.
 
-class FoodEntry(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
+from django.db import models
 
+class FoodEntry(models.Model):
     name = models.CharField(max_length=100)
     calories = models.PositiveIntegerField(help_text="kcal")
 
@@ -21,3 +18,4 @@ class FoodEntry(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.calories} kcal)"
+
