@@ -1,64 +1,110 @@
-{% extends "base.html" %}
-
-{% block content %}
-    <main class="flex flex-row flex-wrap items-center justify-center">
+{% extends "base.html" %} {% block content %}
+<main class="flex flex-row flex-wrap items-center justify-center">
+  <div
+    id="content"
+    class="flex flex-row flex-wrap items-center justify-center m-20"
+  >
+    <div
+      id="dailyCalCard"
+      class="p-4 border border-2 border-black w-[375px] rounded-2xl h-fit m-20"
+    >
+      <h3 class="m-3 text-xl">Daily Calories:</h3>
+      <section class="grid grid-cols-4 m-5 w-auto items-center">
+        <span class="col-span-3">Food:</span
+        ><span class="col-span-1">Cals:</span>
+      </section>
       <div
-        id="content"
-        class="flex flex-row flex-wrap items-center justify-center m-20"
+        id="foodsContainer"
+        class="h-[23vh] border border-2 border-black rounded-xl overflow-auto"
       >
         <div
-          id="dailyCalCard"
-          class="p-4 border border-2 border-black w-[375px] rounded-2xl h-fit m-20"
+          id="foodsCard"
+          class="grid grid-cols-4 h-16 w-auto border border-1 border-black items-center"
         >
-          <h3 class="m-3 text-xl">Daily Calories:</h3>
-          <section class="grid grid-cols-4 m-5 w-auto items-center">
-            <span class="col-span-3">Food:</span
-            ><span class="col-span-1">Cals:</span>
-          </section>
-          <div id="foodsContainer" class="h-[23vh] border border-2 border-black rounded-xl overflow-auto">
-            <div
-              id="foodsCard"
-              class="grid grid-cols-4 h-16 w-auto border border-1 border-black items-center"
-            >
-              <span id="foodName" class="col-span-3 m-1 border-r-1 border-black"
-                >default food</span
-              >
-              <span id="calories" class="col-span-1 m-1">000</span>
-            </div>
-          </div>
-          <h4 class="m-3 text-xl">Total Calories: <span id="totalCals">0</span></h4>
-        </div>
-        <div
-          id="addFoodCard"
-          class="p-4 border border-2 border-black w-fit rounded-2xl h-fit m-20"
-        >
-          <form class="m-13" id="addFood">
-            <fieldset>
-              <legend>Add Food</legend>
-              <label for="newFood">Food Name:</label><br />
-              <input
-                class="bg-white rounded border border-1 border-black"
-                type="text"
-                id="newFood"
-                name="newFood"
-                required
-              /><br />
-              <label for="newFoodCals">Calorie count:</label><br />
-              <input
-                class="bg-white rounded border border-1 border-black"
-                type="text"
-                id="newFoodCals"
-                name="newFoodCals"
-                required
-              /><br />
-              <input
-                class="m-3 px-3 py-1 rounded border border-1 border-black"
-                type="Submit"
-                value="Add Food"
-              />
-            </fieldset>
-          </form>
+          <span id="foodName" class="col-span-3 m-1 border-r-1 border-black"
+            >default food</span
+          >
+          <span id="calories" class="col-span-1 m-1">000</span>
         </div>
       </div>
-    </main>
-{% endblock %}
+      <h4 class="m-3 text-xl">Total Calories: <span id="totalCals">0</span></h4>
+    </div>
+    <div
+      id="addFoodCard"
+      class="p-4 border border-2 border-black w-fit rounded-2xl h-fit m-20"
+    >
+      <form class="m-13" id="addFood">
+        <fieldset>
+          <legend>Add Food</legend>
+          <label for="newFood">Food Name:</label><br />
+          <input
+            class="bg-white rounded border border-1 border-black"
+            type="text"
+            id="newFood"
+            name="newFood"
+            required
+          /><br />
+          <label for="newFoodCals">Calorie count:</label><br />
+          <input
+            class="bg-white rounded border border-1 border-black"
+            type="text"
+            id="newFoodCals"
+            name="newFoodCals"
+            required
+          /><br />
+          <input
+            class="m-3 px-3 py-1 rounded border border-1 border-black"
+            type="Submit"
+            value="Add Food"
+          />
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</main>
+
+{% endblock %} {% block extra_js %}
+<script>
+  const form = document.getElementById("addFood");
+  const foodsContainer = document.getElementById("foodsContainer");
+  const totalCalsEl = document.getElementById("totalCals");
+
+  let totalCalories = 0;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const response = await fetch("{% url 'add_food' %}", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Add food to UI
+      const foodDiv = document.createElement("div");
+      foodDiv.className =
+        "grid grid-cols-4 h-16 w-auto border border-1 border-black items-center";
+
+      foodDiv.innerHTML = `
+        <span class="col-span-3 m-1 border-r-1 border-black">${data.name}</span>
+        <span class="col-span-1 m-1">${data.calories}</span>
+      `;
+
+      foodsContainer.appendChild(foodDiv);
+
+      // Update total calories
+      totalCalories += data.calories;
+      totalCalsEl.textContent = totalCalories;
+
+      form.reset();
+    } else {
+      alert("Failed to add food");
+    }
+  });
+</script>
+
+{% endblock extra_js %}
